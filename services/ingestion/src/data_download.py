@@ -26,29 +26,6 @@ def get_filename():
     filename = l_tuesday.strftime("%y%m%d")
     return filename
 
-# # download zip file from website and store at GCS
-# def download_n_upload(prefix, suffix, filename, format):
-#     zip_file = f"{filename}{format}"
-#     year = datetime.date.today().year
-#     url = f"{prefix}{year}{suffix}{zip_file}"
-#     response = requests.get(url, stream=True)
-#     if response.status_code == 200:
-#         full_length = response.headers.get("Content-Length")
-#         # print(response.headers.get("Accept-Ranges"))
-#         client = storage.Client()
-#         bucket = client.bucket(bucket_name)
-#         blob = bucket.blob(zip_file)
-#         # temp_blob = bucket.blob("file.temp")
-
-#         with blob.open("wb") as file:
-#             for chunk in response.iter_content(chunk_size=8192):
-#                 if chunk:
-#                     file.write(chunk)
-        
-        # blob.upload_from_filename(zip_file)
-    # else:
-    #     print(f"Failed to download {url}")
-
 def check_existing_tmp_blobs():
     blobs = list(bucket.list_blobs(prefix="tmp/"))
     if blobs:
@@ -92,17 +69,24 @@ def buffered_download_n_upload(prefix, suffix, filename, format):
             try:
                 blob = bucket.blob(f"tmp/{filename}_{i}")
                 # r=requests.get(url, headers=headers, stream=True)
-                tmp_path = download_tmp(url, headers)
+                if tmp_path == "":
+                    tmp_path = download_tmp(url, headers)
                 logging.info(f"Chunk {i+1} fetched.")
                 # blob.upload_from_file(r.raw, rewind=True)
                 blob.upload_from_filename(tmp_path)
                 logging.info(f"{blob.name} uploaded")
                 chunks_to_merge.append(blob)
                 logging.info(f"Uploaded {i+1} chunks.")
+                os.remove(tmp_path)
+                # clear tmp_path after uploaded, so if we have a valid tmp_path
+                # we know it's a finished file yet to be uploaded.
+                tmp_path = ""
+                logging.info(f"tmp file for chunk {i+1} removed")
                 attempt = 0
                 break
             except Exception as e:
                 logging.error(f"Error {e}, retry")
+                # os.remove(tmp_path)
                 attempt += 1
                 if attempt >= max_retry:
                     logging.error(f"Downloading failed. {i} chunks downloaded.")
@@ -130,10 +114,10 @@ def download_tmp(url, headers):
                     logging.info(f"Fetched {tmp_size}")
             tmp_path = tmp.name
     except Exception as e:
-        tmp.delete()
-        logging.error(f"Some errors happened: {e}")
+        os.remove(tmp.name)
+        logging.error(f"Some errors happened: {e}. Incomplete temporary file has been deleted.")
     return tmp_path
 
-
-buffered_download_n_upload(patent_grant_url_prefix, patent_grant_url_suffix, get_filename(),".tar")
-# download_n_upload(patent_grant_url_prefix, patent_grant_url_suffix, get_filename(),".tar")
+if __name__ == "__main__":
+    buffered_download_n_upload(patent_grant_url_prefix, patent_grant_url_suffix, get_filename(),".tar")
+    # download_n_upload(patent_grant_url_prefix, patent_grant_url_suffix, get_filename(),".tar")

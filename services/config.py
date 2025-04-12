@@ -1,6 +1,6 @@
 import os
 
-demo_mode = os.getenv("DEMO_MODE", False).lower() == "true"
+demo_mode = os.getenv("DEMO_MODE", "false").lower() == "true"
 demo_file_run = int(os.getenv("DEMO_FILE_RUN", "100"))
 # This is the bucket where downloaded files are stored
 landing_bucket_name = os.getenv("BUCKET_RAW")
