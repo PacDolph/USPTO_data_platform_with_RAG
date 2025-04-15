@@ -1,3 +1,7 @@
+⚠️ Project Status: Work in Progress
+
+This project is still under active development. While the core pipeline is functional, several components (including historical ingestion, analytics layer, and UI) are in progress or planned. Expect continued updates and improvements.
+
 # A Patent Intelligence Platform
 
 A scalable, modular, and cloud-native platform for processing and semantically searching patent data.
