@@ -32,7 +32,7 @@ The system is still evolving, but the core pipeline is functional and will be cl
 
 ## 🏗️ Architecture
 
-![System Architecture](assets/Model databases.png)
+![System Architecture](assets/Model%20databases.png)
 
 1. **Ingestion**
 
