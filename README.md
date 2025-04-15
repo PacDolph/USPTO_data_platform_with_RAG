@@ -1,4 +1,4 @@
-# Patent Intelligence Platform
+# A Patent Intelligence Platform
 
 A scalable, modular, and cloud-native platform for processing and semantically searching patent data.
 
