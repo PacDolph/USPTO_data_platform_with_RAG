@@ -8,11 +8,9 @@ except Exception:
     logging.error("Failed to load env vars from .env file.")
     pass
 
-landing_bucket_name = os.getenv("BUCKET_RAW")
-id_table_id = ""
-id_table_cit = ""
-id_table_ipcr = ""
-id_table_uspc = "" 
+demo_mode = os.getenv("DEMO_MODE", "false").lower() == "true"
 
 logging_level = os.getenv("LOG_LEVEL", "debug").upper()
-demo_mode = os.getenv("DEMO_MODE", "false").lower() == "true"
+
+# data_path = os.getenv("DATA_PATH")
+open_ai_key = os.getenv("OPENAI_API_KEY")
