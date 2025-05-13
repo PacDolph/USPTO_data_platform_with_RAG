@@ -6,17 +6,15 @@ import os
 import math
 import tempfile
 import logging
+from config import (landing_bucket_name, logging_level, full_text_url_prefix,
+                    patent_grant_url_prefix, full_text_url_suffix,
+                    patent_grant_url_suffix)
 
-bucket_name = os.getenv("BUCKET_RAW")
+bucket_name = landing_bucket_name
 client = storage.Client()
 bucket = client.bucket(bucket_name)
-logging_level = os.getenv("LOG_LEVEL", "INFO").upper()
+logging_level = logging_level
 logging.basicConfig(level=getattr(logging, logging_level))
-
-full_text_url_prefix = "https://bulkdata.uspto.gov/data/patent/grant/redbook/fulltext/"
-patent_grant_url_prefix = "https://bulkdata.uspto.gov/data/patent/grant/redbook/"
-full_text_url_suffix = "/ipg"
-patent_grant_url_suffix = "/I20"
 
 # return file name as year+month+day
 def get_filename():
